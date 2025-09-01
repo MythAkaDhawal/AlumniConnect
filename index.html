@@ -210,7 +210,21 @@
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Global variables for Firebase and user data
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+
+        // Import the function you need from the SDKs you need
+        import { initilizeApp } from "firebase/app";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's firebase configuration
+        const firebaseconfig = {
+            apiKey: "AIzaSyDpcn-CAhNrb0OhOAr-Jd2JdHb0DVOCvf4",
+            authDomain: "alumniconnect-hackathon.firebaseapp.com",
+            projectId: "alumniconnect-hackathon",
+            storageBucket: "alumniconnect-hackathon.firebasestorage.app",
+            messagingSenderId: "753641338371",
+            appId: "1:753641338371:web:ca9be20f6718d1a99b0036"
+        };
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
         let db;
