@@ -1,3 +1,7 @@
+<!-- Chosen Palette: Midnight Professional -->
+<!-- Application Structure Plan: A centered, dark-themed login form with a dynamic particle background. The layout is simple and focused, guiding the user to the login action. Features are highlighted in cards below the main form to showcase the app's value proposition without cluttering the main interaction point. The Sign Up link provides a graceful, strategic redirect to avoid a complex implementation while acknowledging future growth. -->
+<!-- Visualization & Content Choices: Particle Background -> Goal: Engage -> Presentation: Animated canvas with glowing particles and lines -> Interaction: Hover to 'grab' particles, click to 'push' them away -> Justification: Creates a modern, high-tech, and dynamic feel that is performant and non-distracting. Login Form -> Goal: Authenticate -> Presentation: Centered card with clean input fields and button -> Interaction: Form submission triggers Firebase authentication and page redirect on success -> Justification: Provides a clear, focused call-to-action that is critical for the app's user flow. Feature Cards -> Goal: Inform -> Presentation: Horizontal row of cards with icons and text -> Interaction: Hover effects to indicate interactivity and value -> Justification: Communicates the app's key features to new users immediately, setting expectations. Confirms NO SVG/Mermaid. -->
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,13 +49,8 @@
         import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Import the function you need from the SDKs you need
-        import { initilizeApp } from "firebase/app";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-
-        // Your web app's firebase configuration
-        const firebaseconfig = {
+        // IMPORTANT: Paste your Firebase config here
+        const firebaseConfig = {
             apiKey: "AIzaSyDpcn-CAhNrb0OhOAr-Jd2JdHb0DVOCvf4",
             authDomain: "alumniconnect-hackathon.firebaseapp.com",
             projectId: "alumniconnect-hackathon",
@@ -59,7 +58,9 @@
             messagingSenderId: "753641338371",
             appId: "1:753641338371:web:ca9be20f6718d1a99b0036"
         };
+        
         let auth;
+        const indexFileLocation = "file:///path/to/your/index.html"; // UPDATE THIS PATH
 
         document.addEventListener('DOMContentLoaded', async () => {
             setLogLevel('Debug');
@@ -80,26 +81,27 @@
                 const app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
             } catch (e) {
-                showMessage("Error initializing Firebase.", true);
+                showMessage("Error initializing Firebase. Please check your config.", true);
                 return;
             }
-
+            
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 loginBtn.textContent = "Logging in...";
                 loginBtn.disabled = true;
 
                 try {
-                    if (typeof __initial_auth_token !== 'undefined') {
+                    const __initial_auth_token = "YOUR_AUTH_TOKEN_HERE"; // Replace with your token if available
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
                         await signInAnonymously(auth);
                     }
                     showMessage("Login successful! Redirecting...");
-                    window.location.href = "index.html";
+                    window.location.href = indexFileLocation;
                 } catch (error) {
                     console.error("Login failed:", error);
-                    showMessage("Login failed. Please check your credentials.", true);
+                    showMessage("Login failed. Please try again.", true);
                     loginBtn.textContent = "Login";
                     loginBtn.disabled = false;
                 }
