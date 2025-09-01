@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AlumniConnect</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        .text-accent {
+            color: #58a6ff;
+        }
+        .bg-card {
+            background-color: #161b22;
+        }
+        .shadow-glow {
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.2);
+        }
+        .nav-link.active {
+            background-color: #1f242b;
+            border-left: 4px solid #58a6ff;
+        }
+        .nav-link {
+            transition: background-color 0.2s, border-left 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .nav-link:hover {
+            background-color: #1f242b;
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <aside class="w-64 bg-card h-screen p-6 flex flex-col items-center sticky top-0 border-r border-gray-700">
+        <div class="mb-8 mt-4 text-2xl font-bold flex items-center gap-2">
+            <span class="text-accent">&#127891;</span>
+            AlumniConnect
+        </div>
+        <nav class="flex flex-col w-full">
+            <a href="#" class="nav-link flex items-center gap-4 py-3 px-4 rounded-lg cursor-pointer active" data-target="dashboard">
+                <span class="text-xl">&#128200;</span>
+                <span class="font-medium">Dashboard</span>
+            </a>
+            <a href="#" class="nav-link flex items-center gap-4 py-3 px-4 rounded-lg cursor-pointer mt-2" data-target="directory">
+                <span class="text-xl">&#128100;</span>
+                <span class="font-medium">Directory</span>
+            </a>
+            <a href="#" class="nav-link flex items-center gap-4 py-3 px-4 rounded-lg cursor-pointer mt-2" data-target="events">
+                <span class="text-xl">&#128197;</span>
+                <span class="font-medium">Events</span>
+            </a>
+            <a href="#" class="nav-link flex items-center gap-4 py-3 px-4 rounded-lg cursor-pointer mt-2" data-target="chat">
+                <span class="text-xl">&#128222;</span>
+                <span class="font-medium">Chat</span>
+            </a>
+            <a href="#" class="nav-link flex items-center gap-4 py-3 px-4 rounded-lg cursor-pointer mt-2" data-target="profile">
+                <span class="text-xl">&#128101;</span>
+                <span class="font-medium">My Profile</span>
+            </a>
+        </nav>
+        <div class="mt-auto w-full">
+            <a href="#" class="nav-link flex items-center gap-4 py-3 px-4 rounded-lg cursor-pointer">
+                <span class="text-xl">&#128274;</span>
+                <span class="font-medium">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <main class="flex-1 p-8">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="main-content">
+            <h1 class="text-3xl font-bold mb-6 text-white">Dashboard</h1>
+            <p class="text-gray-400 mb-8">A quick overview of our community. Explore key stats and recent activity.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="bg-card p-6 rounded-xl shadow-glow">
+                    <h2 class="text-lg font-semibold text-accent">Total Alumni</h2>
+                    <p class="text-4xl font-bold mt-2" id="total-alumni">0</p>
+                    <p class="text-sm text-gray-500 mt-1">Total registered users.</p>
+                </div>
+                <div class="bg-card p-6 rounded-xl shadow-glow">
+                    <h2 class="text-lg font-semibold text-accent">Connections Made</h2>
+                    <p class="text-4xl font-bold mt-2" id="total-connections">0</p>
+                    <p class="text-sm text-gray-500 mt-1">Inter-alumni connections.</p>
+                </div>
+                <div class="bg-card p-6 rounded-xl shadow-glow">
+                    <h2 class="text-lg font-semibold text-accent">Upcoming Events</h2>
+                    <p class="text-4xl font-bold mt-2" id="total-events">0</p>
+                    <p class="text-sm text-gray-500 mt-1">Events scheduled this month.</p>
+                </div>
+            </div>
+            <div class="mt-8">
+                <h2 class="text-2xl font-bold mb-4 text-white">Recent Activity</h2>
+                <ul class="space-y-4" id="recent-activity-list">
+                    <li class="bg-card p-4 rounded-xl flex items-center justify-center">
+                        <p class="text-gray-400">Loading recent activity...</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Directory Section -->
+        <section id="directory" class="main-content hidden">
+            <h1 class="text-3xl font-bold mb-6 text-white">Alumni Directory</h1>
+            <p class="text-gray-400 mb-8">Search and connect with thousands of alumni from around the world.</p>
+            <div class="mb-6">
+                <input type="text" id="directory-search" placeholder="Search by name, year, or industry..." class="w-full p-3 rounded-lg bg-card text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent">
+            </div>
+            <div id="alumni-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <p class="text-gray-400 col-span-full text-center">Loading alumni directory...</p>
+            </div>
+        </section>
+
+        <!-- Events Section -->
+        <section id="events" class="main-content hidden">
+            <h1 class="text-3xl font-bold mb-6 text-white">Events & Workshops</h1>
+            <p class="text-gray-400 mb-8">Discover and RSVP to upcoming events, from career webinars to social meetups.</p>
+            <div id="event-list" class="space-y-6">
+                <p class="text-gray-400">Loading events...</p>
+            </div>
+             <button id="generate-event-ideas-btn" class="mt-6 bg-purple-600 text-white py-2 px-6 rounded-lg font-semibold shadow-glow transition hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500">✨ Generate Event Ideas</button>
+             <div id="event-ideas-container" class="mt-4 p-4 bg-gray-800 rounded-lg hidden">
+                <h3 class="text-lg font-semibold text-white">AI-Generated Event Ideas:</h3>
+                <p id="event-ideas-content" class="mt-2 text-gray-400">Ideas will appear here...</p>
+             </div>
+        </section>
+
+        <!-- Chat Section -->
+        <section id="chat" class="main-content hidden h-full flex flex-col">
+            <h1 class="text-3xl font-bold mb-6 text-white">Chat</h1>
+            <p class="text-gray-400 mb-8">Connect with other alumni in real-time. Start a new conversation or join a group chat.</p>
+            <div class="flex-1 flex flex-col lg:flex-row gap-6">
+                <!-- Chat List Panel -->
+                <div class="w-full lg:w-1/3 bg-card rounded-xl p-4 flex flex-col h-[70vh] lg:h-auto">
+                    <h2 class="text-lg font-semibold text-white mb-4">Conversations</h2>
+                    <div id="chat-list" class="flex-1 overflow-y-auto space-y-2">
+                        <div class="chat-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition cursor-pointer" data-chat-id="public_group_chat" data-chat-name="Public Group Chat">
+                             <div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-xl text-white">&#128104;</div>
+                             <h4 class="font-semibold text-white">Public Group Chat</h4>
+                         </div>
+                    </div>
+                </div>
+                <!-- Chat Window Panel -->
+                <div class="w-full lg:w-2/3 bg-card rounded-xl flex flex-col h-[70vh] lg:h-auto">
+                    <div id="chat-header" class="p-4 border-b border-gray-700 flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-xl">&#128101;</div>
+                        <h2 id="chat-title" class="text-lg font-semibold text-white">Select a Chat</h2>
+                    </div>
+                    <div id="chat-messages" class="flex-1 p-4 overflow-y-auto space-y-4">
+                        <p class="text-gray-400 text-center mt-8">Please select a chat to view messages.</p>
+                    </div>
+                    <div id="chat-input-area" class="p-4 border-t border-gray-700 hidden">
+                        <div class="flex flex-col gap-2">
+                            <div class="flex gap-2">
+                                <input type="text" id="chat-message-input" placeholder="Type a message..." class="flex-1 p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-accent">
+                                <button id="send-message-btn" class="bg-accent text-white py-2 px-6 rounded-lg font-semibold shadow-glow transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-accent">Send</button>
+                            </div>
+                            <div class="flex gap-2 mt-2">
+                                <button id="icebreaker-btn" class="flex-1 bg-indigo-600 text-white py-2 px-4 rounded-lg font-semibold transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">✨ Icebreaker</button>
+                                <button id="meeting-btn" class="flex-1 bg-teal-600 text-white py-2 px-4 rounded-lg font-semibold transition hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm">🗓️ Meeting Suggestion</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- My Profile Section -->
+        <section id="profile" class="main-content hidden">
+            <h1 class="text-3xl font-bold mb-6 text-white">My Profile</h1>
+            <p class="text-gray-400 mb-8">Manage your details, connections, and professional achievements.</p>
+            <div class="bg-card p-8 rounded-xl flex flex-col md:flex-row items-center md:items-start gap-8">
+                <div class="flex-shrink-0">
+                    <div class="w-40 h-40 bg-gray-800 rounded-full flex items-center justify-center text-6xl text-gray-600">
+                        &#128100;
+                    </div>
+                </div>
+                <div class="flex-1">
+                    <h2 class="text-3xl font-bold text-white" id="user-name">Your Name Here</h2>
+                    <p class="text-md text-accent mt-2" id="user-title">Software Developer</p>
+                    <p class="text-md text-gray-500 mt-1" id="user-year">Class of 2024</p>
+                    <p class="text-gray-400 mt-4" id="user-bio">A passionate developer with experience in full-stack web applications and a keen interest in AI/ML.</p>
+                    <div class="mt-6 flex items-center gap-4 text-gray-500">
+                        <span class="flex items-center gap-2"><span class="text-xl">&#128231;</span><span id="user-email">email@example.com</span></span>
+                        <span class="flex items-center gap-2"><span class="text-xl">&#128222;</span><span id="user-phone">+91 1234567890</span></span>
+                    </div>
+                    <button class="mt-6 bg-accent text-white py-2 px-6 rounded-lg font-semibold shadow-glow transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-accent" id="save-profile-btn">Save Profile</button>
+                    <div class="mt-6">
+                        <button id="generate-summary-btn" class="bg-indigo-600 text-white py-2 px-6 rounded-lg font-semibold shadow-glow transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">✨ Generate Profile Summary</button>
+                        <div id="summary-container" class="mt-4 p-4 bg-gray-800 rounded-lg hidden">
+                            <h3 class="text-lg font-semibold text-white">AI-Generated Summary:</h3>
+                            <p id="summary-content" class="mt-2 text-gray-400">Summary will appear here...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, query, orderBy, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Global variables for Firebase and user data
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        let db;
+        let auth;
+        let userId = 'anonymous';
+        let alumniData = [];
+        let currentChatId = 'public_group_chat';
+        let currentChatTitle = 'Public Group Chat';
+
+        const alumniCollectionPath = `/artifacts/${appId}/public/data/alumni`;
+        const eventsCollectionPath = `/artifacts/${appId}/public/data/events`;
+        const chatsCollectionPath = `/artifacts/${appId}/public/data/chats`;
+        const usersCollectionPath = `/artifacts/${appId}/users`;
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const mainContents = document.querySelectorAll('.main-content');
+            const alumniListContainer = document.getElementById('alumni-list');
+            const eventListContainer = document.getElementById('event-list');
+            const searchInput = document.getElementById('directory-search');
+            const generateSummaryBtn = document.getElementById('generate-summary-btn');
+            const summaryContainer = document.getElementById('summary-container');
+            const summaryContent = document.getElementById('summary-content');
+            const generateEventIdeasBtn = document.getElementById('generate-event-ideas-btn');
+            const eventIdeasContainer = document.getElementById('event-ideas-container');
+            const eventIdeasContent = document.getElementById('event-ideas-content');
+            const chatListContainer = document.getElementById('chat-list');
+            const chatMessagesContainer = document.getElementById('chat-messages');
+            const chatMessageInput = document.getElementById('chat-message-input');
+            const sendMessageBtn = document.getElementById('send-message-btn');
+            const chatInputArea = document.getElementById('chat-input-area');
+            const chatTitle = document.getElementById('chat-title');
+            const icebreakerBtn = document.getElementById('icebreaker-btn');
+            const meetingBtn = document.getElementById('meeting-btn');
+
+            setLogLevel('Debug');
+
+            // Initialize Firebase and sign in
+            try {
+                const app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                
+                if (typeof __initial_auth_token !== 'undefined') {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+                console.log("Firebase initialized and signed in.");
+            } catch (e) {
+                console.error("Error initializing Firebase:", e);
+                return;
+            }
+
+            const showSection = (targetId) => {
+                mainContents.forEach(section => section.classList.add('hidden'));
+                document.getElementById(targetId).classList.remove('hidden');
+                navLinks.forEach(link => link.classList.remove('active'));
+                document.querySelector(`[data-target="${targetId}"]`).classList.add('active');
+            };
+
+            const renderAlumniList = (alumniDataToRender) => {
+                alumniListContainer.innerHTML = '';
+                if (alumniDataToRender.length === 0) {
+                    alumniListContainer.innerHTML = '<p class="text-gray-400 col-span-full text-center">No alumni found. Try a different search.</p>';
+                    return;
+                }
+                alumniDataToRender.forEach(alumnus => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-card p-4 rounded-xl shadow-glow cursor-pointer hover:bg-gray-800 transition';
+                    card.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <img src="${alumnus.img_url || 'https://placehold.co/100x100/3B82F6/ffffff?text=User'}" alt="${alumnus.name}" class="w-12 h-12 rounded-full border-2 border-accent">
+                            <div>
+                                <h3 class="font-semibold text-white">${alumnus.name}</h3>
+                                <p class="text-sm text-gray-500">${alumnus.industry} • Class of ${alumnus.year}</p>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-3 line-clamp-2">${alumnus.bio}</p>
+                    `;
+                    alumniListContainer.appendChild(card);
+                });
+            };
+
+            const renderEventsList = (eventsData) => {
+                eventListContainer.innerHTML = '';
+                if (eventsData.length === 0) {
+                    eventListContainer.innerHTML = '<p class="text-gray-400 text-center">No upcoming events scheduled. Check back later!</p>';
+                    return;
+                }
+                eventsData.forEach(event => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-card p-6 rounded-xl shadow-glow';
+                    card.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-accent">${event.title}</h3>
+                            <span class="bg-gray-700 text-gray-300 text-sm px-3 py-1 rounded-full">${event.participants || 0} RSVPs</span>
+                        </div>
+                        <div class="mt-3 flex items-center gap-4 text-gray-400">
+                            <span class="flex items-center gap-2"><span class="text-lg">&#128197;</span>${event.date}</span>
+                            <span class="flex items-center gap-2"><span class="text-lg">&#127963;</span>${event.location}</span>
+                        </div>
+                        <p class="text-gray-400 mt-4">${event.description}</p>
+                        <button class="mt-4 bg-accent text-white py-2 px-6 rounded-lg font-semibold shadow-glow transition hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-accent">RSVP Now</button>
+                    `;
+                    eventListContainer.appendChild(card);
+                });
+            };
+
+            const renderDashboardStats = (alumniCount, connections, eventsCount) => {
+                document.getElementById('total-alumni').textContent = alumniCount;
+                document.getElementById('total-connections').textContent = connections;
+                document.getElementById('total-events').textContent = eventsCount;
+            };
+
+            const renderRecentActivity = (data) => {
+                const recentActivityList = document.getElementById('recent-activity-list');
+                recentActivityList.innerHTML = '';
+                if (data.length === 0) {
+                    recentActivityList.innerHTML = '<p class="text-gray-400">No recent activity to display.</p>';
+                    return;
+                }
+                data.forEach(activity => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'bg-card p-4 rounded-xl flex items-center gap-4';
+                    listItem.innerHTML = `
+                        <span class="text-3xl">${activity.icon}</span>
+                        <div>
+                            <p class="font-medium text-white">${activity.text}</p>
+                            <p class="text-sm text-gray-500">${activity.subtext}</p>
+                        </div>
+                    `;
+                    recentActivityList.appendChild(listItem);
+                });
+            };
+
+            const callGeminiAPI = async (prompt) => {
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text: prompt }] }],
+                };
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    const result = await response.json();
+                    return result.candidates[0].content.parts[0].text;
+                } catch (error) {
+                    console.error("Error calling Gemini API:", error);
+                    return "Sorry, I couldn't generate a response at this time.";
+                }
+            };
+            
+            generateSummaryBtn.addEventListener('click', async () => {
+                summaryContainer.classList.remove('hidden');
+                summaryContent.textContent = 'Generating summary...';
+                
+                const name = document.getElementById('user-name').textContent;
+                const title = document.getElementById('user-title').textContent;
+                const year = document.getElementById('user-year').textContent;
+                const bio = document.getElementById('user-bio').textContent;
+
+                const prompt = `Act as a professional summary writer. Based on the following information, write a brief, one-paragraph summary of an alumni's professional profile. The information is: Name: ${name}, Title: ${title}, Graduation Year: ${year}, Bio: ${bio}.`;
+                
+                const summaryText = await callGeminiAPI(prompt);
+                summaryContent.textContent = summaryText;
+            });
+            
+            generateEventIdeasBtn.addEventListener('click', async () => {
+                eventIdeasContainer.classList.remove('hidden');
+                eventIdeasContent.textContent = 'Brainstorming event ideas...';
+                
+                const prompt = `As an event planner for an alumni association, generate three unique and engaging event ideas. The alumni are from a diverse range of industries including software, data science, and design, and graduated in various years. Format the response as a bulleted list with a short description for each idea.`;
+                
+                const ideasText = await callGeminiAPI(prompt);
+                eventIdeasContent.textContent = ideasText;
+            });
+
+            const renderMessages = (messages) => {
+                chatMessagesContainer.innerHTML = '';
+                messages.forEach(msg => {
+                    const messageElement = document.createElement('div');
+                    messageElement.className = `flex ${msg.senderId === userId ? 'justify-end' : 'justify-start'}`;
+                    const timestampStr = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString() : '';
+                    messageElement.innerHTML = `
+                        <div class="p-3 rounded-lg ${msg.senderId === userId ? 'bg-accent text-white' : 'bg-gray-800 text-gray-200'}">
+                            <p class="font-semibold text-sm">${msg.senderName || 'Anonymous'}</p>
+                            <p>${msg.text}</p>
+                            <p class="text-xs text-right mt-1 opacity-70">${timestampStr}</p>
+                        </div>
+                    `;
+                    chatMessagesContainer.appendChild(messageElement);
+                });
+                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+            };
+
+            const switchChat = (chatId, chatName) => {
+                currentChatId = chatId;
+                currentChatTitle = chatName;
+                chatTitle.textContent = chatName;
+                chatMessagesContainer.innerHTML = '<p class="text-gray-400 text-center mt-8">Loading messages...</p>';
+                chatInputArea.classList.remove('hidden');
+
+                const messagesCollectionPath = `${chatsCollectionPath}/${currentChatId}/messages`;
+                const messagesQuery = query(collection(db, messagesCollectionPath), orderBy('timestamp'));
+                
+                onSnapshot(messagesQuery, (snapshot) => {
+                    const messages = snapshot.docs.map(doc => doc.data());
+                    renderMessages(messages);
+                });
+            };
+
+            const sendMessage = async () => {
+                const messageText = chatMessageInput.value.trim();
+                if (messageText === '') return;
+
+                const messagesCollectionPath = `${chatsCollectionPath}/${currentChatId}/messages`;
+                const messageData = {
+                    text: messageText,
+                    senderId: userId,
+                    senderName: `User-${userId.substring(0, 4)}`,
+                    timestamp: serverTimestamp()
+                };
+
+                try {
+                    await addDoc(collection(db, messagesCollectionPath), messageData);
+                    chatMessageInput.value = '';
+                } catch (e) {
+                    console.error("Error sending message:", e);
+                }
+            };
+
+            sendMessageBtn.addEventListener('click', sendMessage);
+            chatMessageInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            icebreakerBtn.addEventListener('click', async () => {
+                const alumniId = alumniData.find(a => a.name === currentChatTitle)?.id;
+                if (alumniId) {
+                    const alumnus = alumniData.find(a => a.id === alumniId);
+                    const prompt = `As a professional networking assistant, draft a friendly and engaging icebreaker question to start a conversation with an alumni. Their profile is: Name: ${alumnus.name}, Industry: ${alumnus.industry}, Bio: ${alumnus.bio}. The question should be concise and professional.`;
+                    const icebreakerText = await callGeminiAPI(prompt);
+                    chatMessageInput.value = icebreakerText;
+                } else {
+                    alert("Please select a one-on-one chat to use this feature.");
+                }
+            });
+
+            meetingBtn.addEventListener('click', async () => {
+                 const messagesCollectionPath = `${chatsCollectionPath}/${currentChatId}/messages`;
+                 const messagesSnapshot = await getDocs(query(collection(db, messagesCollectionPath)));
+                 const messages = messagesSnapshot.docs.map(doc => doc.data());
+                 const chatHistory = messages.map(msg => `${msg.senderName}: ${msg.text}`).join('\n');
+                 const prompt = `Analyze the following chat history and suggest a convenient time for a meeting. The context is professional. Chat history: \n${chatHistory}`;
+                 const suggestionText = await callGeminiAPI(prompt);
+                 chatMessageInput.value = `AI suggested: ${suggestionText}`;
+            });
+
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    userId = user.uid;
+                    console.log("User authenticated with ID:", userId);
+                    
+                    onSnapshot(collection(db, alumniCollectionPath), (snapshot) => {
+                        alumniData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        const totalAlumni = alumniData.length;
+                        document.getElementById('total-alumni').textContent = totalAlumni;
+                        renderAlumniList(alumniData);
+                        renderChatList(alumniData);
+                    });
+                    
+                    onSnapshot(collection(db, eventsCollectionPath), (snapshot) => {
+                        const eventsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        const totalEvents = eventsData.length;
+                        document.getElementById('total-events').textContent = totalEvents;
+                        renderEventsList(eventsData);
+                    });
+                } else {
+                    console.log("No user is signed in.");
+                }
+            });
+
+            const renderChatList = (alumniData) => {
+                chatListContainer.innerHTML = '';
+                const publicChat = document.createElement('div');
+                publicChat.className = 'chat-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition cursor-pointer';
+                publicChat.innerHTML = `<div class="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-xl text-white">&#128104;</div><h4 class="font-semibold text-white">Public Group Chat</h4>`;
+                publicChat.addEventListener('click', () => {
+                    switchChat('public_group_chat', 'Public Group Chat');
+                });
+                chatListContainer.appendChild(publicChat);
+
+                alumniData.forEach(alumnus => {
+                    if (alumnus.id !== userId) {
+                        const chatItem = document.createElement('div');
+                        chatItem.className = 'chat-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-800 transition cursor-pointer';
+                        chatItem.innerHTML = `<img src="${alumnus.img_url || 'https://placehold.co/100x100/3B82F6/ffffff?text=User'}" alt="${alumnus.name}" class="w-10 h-10 rounded-full border-2 border-accent">
+                                              <h4 class="font-semibold text-white">${alumnus.name}</h4>`;
+                        chatItem.addEventListener('click', () => {
+                            switchChat(`private_${userId}_${alumnus.id}`, alumnus.name);
+                        });
+                        chatListContainer.appendChild(chatItem);
+                    }
+                });
+                switchChat(currentChatId, currentChatTitle);
+            };
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.currentTarget.getAttribute('data-target');
+                    showSection(targetId);
+                });
+            });
+
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                if (!alumniData) return;
+                const filteredData = alumniData.filter(alumnus =>
+                    alumnus.name.toLowerCase().includes(query) ||
+                    alumnus.year.includes(query) ||
+                    alumnus.industry.toLowerCase().includes(query)
+                );
+                renderAlumniList(filteredData);
+            });
+            
+            const addExampleProfile = async () => {
+                if (!userId) {
+                    console.error("User not authenticated.");
+                    return;
+                }
+                const profileData = {
+                    name: 'John Doe',
+                    year: '2019',
+                    industry: 'Software Engineering',
+                    bio: 'A passionate developer from the class of 2019.',
+                    img_url: 'https://placehold.co/100x100/3B82F6/ffffff?text=JD'
+                };
+                try {
+                    await setDoc(doc(db, alumniCollectionPath, userId), profileData);
+                    document.getElementById('user-name').textContent = 'John Doe';
+                    document.getElementById('user-title').textContent = 'Software Engineering';
+                    document.getElementById('user-year').textContent = 'Class of 2019';
+                    document.getElementById('user-bio').textContent = 'A passionate developer from the class of 2019.';
+                    console.log("Example profile added successfully.");
+                } catch (e) {
+                    console.error("Error adding document: ", e);
+                }
+            };
+            
+            document.getElementById('save-profile-btn').addEventListener('click', addExampleProfile);
+        });
+    </script>
+</body>
+</html>
