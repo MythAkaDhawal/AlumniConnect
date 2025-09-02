@@ -45,7 +45,6 @@
         import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // IMPORTANT: Paste your Firebase config here
         const firebaseConfig = {
             apiKey: "AIzaSyDpcn-CAhNrb0OhOAr-Jd2JdHb0DVOCvf4",
             authDomain: "alumniconnect-hackathon.firebaseapp.com",
@@ -56,7 +55,6 @@
         };
         
         let auth;
-        const indexFileLocation = "file:///path/to/your/index.html"; // UPDATE THIS PATH
 
         document.addEventListener('DOMContentLoaded', async () => {
             setLogLevel('Debug');
@@ -87,14 +85,14 @@
                 loginBtn.disabled = true;
 
                 try {
-                    const __initial_auth_token = "YOUR_AUTH_TOKEN_HERE"; // Replace with your token if available
+                    const __initial_auth_token = "YOUR_AUTH_TOKEN_HERE";
                     if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                         await signInWithCustomToken(auth, __initial_auth_token);
                     } else {
                         await signInAnonymously(auth);
                     }
                     showMessage("Login successful! Redirecting...");
-                    window.location.href = indexFileLocation;
+                    window.location.href = "index.html";
                 } catch (error) {
                     console.error("Login failed:", error);
                     showMessage("Login failed. Please try again.", true);
