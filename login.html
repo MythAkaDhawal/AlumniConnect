@@ -42,19 +42,21 @@
     </style>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInWithCustomToken, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // IMPORTANT: Paste your Firebase config here
         const firebaseConfig = {
-            apiKey: "AIzaSyDpcn-CAhNrb0OhOAr-Jd2JdHb0DVOCvf4",
-            authDomain: "alumniconnect-hackathon.firebaseapp.com",
-            projectId: "alumniconnect-hackathon",
-            storageBucket: "alumniconnect-hackathon.firebasestorage.app",
-            messagingSenderId: "753641338371",
-            appId: "1:753641338371:web:ca9be20f6718d1a99b0036"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
         
         let auth;
+        const redirectPath = 'index.html';
 
         document.addEventListener('DOMContentLoaded', async () => {
             setLogLevel('Debug');
@@ -79,6 +81,14 @@
                 return;
             }
             
+            // Check for authentication state on page load
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    console.log("User is already signed in, redirecting to dashboard.");
+                    window.location.replace(redirectPath);
+                }
+            });
+
             loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 loginBtn.textContent = "Logging in...";
@@ -92,7 +102,7 @@
                         await signInAnonymously(auth);
                     }
                     showMessage("Login successful! Redirecting...");
-                    window.location.href = "index.html";
+                    window.location.replace(redirectPath);
                 } catch (error) {
                     console.error("Login failed:", error);
                     showMessage("Login failed. Please try again.", true);
