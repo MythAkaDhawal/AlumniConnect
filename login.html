@@ -82,11 +82,56 @@
             }
             
             // Check for authentication state on page load
-            onAuthStateChanged(auth, (user) => {
+            onAuthStateChanged(auth, (user)=> {
                 if (user) {
-                    console.log("User is already signed in, redirecting to dashboard.");
-                    window.location.replace(redirectPath);
+                    userId = user.uid;
+                    console.log("User authenticated with ID:", userId);
+
+                    const alumniCollectionPath = `/artifacts/${appId}/public/data/alumni`;
+                    const eventsCollectionPath = `/artifacts/${appId}/public/data/events`;
+
+                    onSnapshot(collection(db, alumniCollectionPath), (snapshot) => {
+                        alumniData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        const totalAlumni = alumniData.length;
+                        document.getElementById('total-alumni').textContent = totalAlumni;
+                        renderAlumniList(alumniData);
+                        renderChatList(alumniData);
+                        renderRecentActivity([
+                            { icon: '&#128100;', text: 'New Alumni Joined', subtext: 'A new user joined the community.' },
+                            { icon: '&#128197;', text: 'New Event Added', subtext: 'An event has been posted to the events page.' },
+                        ]);
+                    });
+                    onSnapshot(collection(db, eventsCollectionPath), (snapshot) => {
+                        const eventsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                        const totalEvents = eventsData.length;
+                        document.getElementById('total-events').textContent = totalEvents;
+                        renderEventsList(eventsData);
+                    });
+
+                    const saveProfileBtn = document.getElementById('save-profile-btn');
+                    if (saveProfileBtn) {
+                        saveProfileBtn.addEventListener('click', async () => {
+                            const profileData = {
+                                name: document.getElementById('profile-name-input').value,
+                                title: document.getElementById('profile-title-input').value,
+                                year: document.getElementById('profile-year-input').value,
+                                bio: document.getElementById('profile-bio-input').value
+                            };
+                            try {
+                                await setDoc(doc(db, alumniCollectionPath, userId), profileData);
+                                alert('Profile saved successfully!');
+                            } catch (e) {
+                                console.error("Error saving profile: ", e);
+                                alert('Failed to save profile.');
+                            }
+                        });
+                    }
+                } else{
+                    console.log("No user is signed in, redirecting to login.");
+                    setTimeout(() => { window.location.replace(loginFileLocation); }, 50);
                 }
+           
+
             });
 
             loginForm.addEventListener('submit', async (e) => {
