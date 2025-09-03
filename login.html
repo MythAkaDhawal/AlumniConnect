@@ -83,7 +83,9 @@
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     console.log("User is already signed in, redirecting to dashboard.");
-                    window.location.replace(redirectPath);
+                    const currentPath = window.location.href;
+                    const newPath = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/' + redirectPath;
+                    window.location.replace(newPath);
                 }
             });
 
@@ -98,7 +100,9 @@
                 try {
                     await signInWithEmailAndPassword(auth, email, password);
                     showMessage("Login successful! Redirecting...");
-                    window.location.replace(redirectPath);
+                    const currentPath = window.location.href;
+                    const newPath = currentPath.substring(0, currentPath.lastIndexOf('/')) + '/' + redirectPath;
+                    window.location.replace(newPath);
                 } catch (error) {
                     console.error("Login failed:", error);
                     showMessage("Login failed. Please check your credentials.", true);
